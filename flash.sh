@@ -54,6 +54,9 @@ BOOTDIR=/media/$USER/boot
 ROOTFSDIR=/media/$USER/rootfs
 LCLRC=$ROOTFSDIR/etc/rc.local
 
+mkdir -p $BOOTDIR
+mkdir -p $ROOTFSDIR
+
 echo ""
 echo ""
 echo "Current User:                $USER"
