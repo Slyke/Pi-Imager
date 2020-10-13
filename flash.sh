@@ -95,6 +95,8 @@ if [ $DDRES -eq 0 ];then
   eject $DRIVE
   sleep 5
   eject -t $DRIVE
+  sleep 5
+  sync
   mount "$DRIVE"1 $BOOTDIR
   mount "$DRIVE"2 $ROOTFSDIR
   sync
