@@ -78,22 +78,27 @@ else
   echo "This may take 10 minutes to 1 hour to complete."
   echo ""
 
-  dd if=$FLASH of=$DRIVE status=progress
+  dd bs=1M if=$FLASH of=$DRIVE status=progress
+  sync
 fi
 
 DDRES=$?
 
 if [ $DDRES -eq 0 ];then
+  sync
   echo "Remounting drive..."
   sleep 5
+  sync
   eject $DRIVE
   sleep 20
   eject -t $DRIVE
+  sync
   sleep 10
   echo "Writing configs"
   touch $BOOTDIR/ssh > /dev/null
   while [ ! -f $BOOTDIR/ssh ]
   do
+    sync
     printf "."
     sleep 1
     touch $BOOTDIR/ssh > /dev/null
@@ -134,3 +139,5 @@ else
   echo "Run time: $(($DURATION / 60)) minutes and $(($DURATION % 60)) seconds."
   exit 1
 fi
+
+sync
