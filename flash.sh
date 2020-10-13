@@ -90,8 +90,10 @@ if [ $DDRES -eq 0 ];then
   sleep 5
   sync
   eject $DRIVE
-  sleep 20
-  eject -t $DRIVE
+  sleep 5
+  mount "$DRIVE"1 $BOOTDIR
+  mount "$DRIVE"2 $ROOTFSDIR
+  # eject -t $DRIVE
   sync
   sleep 10
   echo "Writing configs"
