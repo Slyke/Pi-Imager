@@ -74,9 +74,9 @@ if [ "$5" = "--dry" ]; then
   echo "Skipping image writing..."
   echo ""
 else
-  echo "Using DD to nuke first 256MB of disk"
+  echo "Using DD to nuke first 520MB of disk"
   sleep 5
-  dd if=/dev/zero of=$DRIVE status=progress count=2 bs=10M
+  dd if=/dev/zero of=$DRIVE status=progress count=52 bs=10M
 
   echo "Starting Flash..."
   sleep 1
