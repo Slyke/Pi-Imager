@@ -6,7 +6,7 @@ if [ "$1" = "--help" ]; then
   echo "Help:"
   echo "  bash flash.sh [device] [current username] [raspberry-pi username] [image]"
   echo "Example:"
-  echo "  sudo bash flash.sh /dev/sdc slyke pi 2020-02-13-raspbian-buster-lite.img"
+  echo "  sudo bash flash.sh /dev/sdc slyke pi 2021-01-11-raspios-buster-armhf-lite"
   echo "or"
   echo "  sudo bash flash.sh"
   exit 0
@@ -37,11 +37,11 @@ else
   PIUSR=$3
 fi
 
-FLASH=$(ls -1 | grep "raspbian" | head -1)
+FLASH=$(ls -1 | grep "raspios" | head -1)
 
 if [ -z ${4+x} ]; then
   echo "Images available:"
-  ls -1 | grep "raspbian"
+  ls -1 | grep "raspios"
   echo ""
   read -p "Enter new file name, or press enter to use '$FLASH': " OPTFLASH
   OPTFLASH=${OPTFLASH:-$FLASH}
@@ -71,8 +71,12 @@ if [ "$5" = "--dry" ]; then
   echo "Skipping image writing..."
   echo ""
 else
-  echo "Starting Flash..."
+  echo "Using DD to nuke first 256MB of disk"
   sleep 5
+  dd if=/dev/zero of=$DRIVE status=progress count=2 bs=10M
+
+  echo "Starting Flash..."
+  sleep 1
 
   echo ""
   echo "This may take 10 minutes to 1 hour to complete."
