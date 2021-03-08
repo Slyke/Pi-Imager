@@ -54,6 +54,9 @@ BOOTDIR=/media/$USER/boot
 ROOTFSDIR=/media/$USER/rootfs
 LCLRC=$ROOTFSDIR/etc/rc.local
 
+mkdir -p $BOOTDIR
+mkdir -p $ROOTFSDIR
+
 echo ""
 echo ""
 echo "Current User:                $USER"
@@ -82,22 +85,33 @@ else
   echo "This may take 10 minutes to 1 hour to complete."
   echo ""
 
-  dd if=$FLASH of=$DRIVE status=progress
+  dd bs=1M if=$FLASH of=$DRIVE status=progress
+  sync
 fi
 
 DDRES=$?
 
 if [ $DDRES -eq 0 ];then
+  sync
   echo "Remounting drive..."
   sleep 5
+  sync
   eject $DRIVE
-  sleep 20
+  sleep 5
   eject -t $DRIVE
+  echo ""
+  sleep 5
+  sync
+  echo ""
+  mount "$DRIVE"1 $BOOTDIR
+  mount "$DRIVE"2 $ROOTFSDIR
+  sync
   sleep 10
   echo "Writing configs"
   touch $BOOTDIR/ssh > /dev/null
   while [ ! -f $BOOTDIR/ssh ]
   do
+    sync
     printf "."
     sleep 1
     touch $BOOTDIR/ssh > /dev/null
@@ -127,6 +141,7 @@ if [ $DDRES -eq 0 ];then
   echo "fi" >> $LCLRC
   echo "" >> $LCLRC
   echo "exit 0" >> $LCLRC
+  sync
   sleep 1
   DURATION=$SECONDS
   echo "Finished!"
@@ -138,3 +153,4 @@ else
   echo "Run time: $(($DURATION / 60)) minutes and $(($DURATION % 60)) seconds."
   exit 1
 fi
+
